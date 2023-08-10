@@ -1,4 +1,4 @@
-We can see the program simply use the function gets(), and take the input of user :
+We can see that the program simply uses the function gets() to take user input :
 
 ```
 (gdb) disass main
