@@ -61,6 +61,28 @@ If we check the function v, we can see that the value contained at address `0x80
    0x08048519 <+117>:	ret
 ```
 
+After the printf call, EAX register will contain the number of characters writted, in the ex below, 64, but the value stored in `0x804988c` is 0. So EAX will always be tested at 0 even if we write 64 caracters :
+
+```nasm
+   0x080484d5 <+49>:	call   0x8048390 <printf@plt> ; <== EAX will contain 64 after this call
+   0x080484da <+54>:	mov    0x804988c,%eax ; <== EAX is set to 0 after this instruction
+   0x080484df <+59>:	cmp    $0x40,%eax ; <== So the test will fail :(
+
+...
+
+012345678901234567890123456789012345678901234567890123456789012
+
+Breakpoint 2, 0x080484da in v ()
+(gdb) p $eax
+$4 = 64
+...
+Breakpoint 3, 0x080484df in v ()
+(gdb) p $eax
+$5 = 0 ; snifu desu
+(gdb) p *0x804988c
+$6 = 0
+```
+
 So, we simply need to rewrite the value present at this address using printf.
 
 Using the formatter `%08x` allows us to advance 4 bytes each time in the stack:
